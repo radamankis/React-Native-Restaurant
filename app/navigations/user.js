@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from 'react-native-elements';
 
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from 'react-navigation';
 
@@ -7,7 +8,10 @@ import { createStackNavigator, createAppContainer, createBottomTabNavigator } fr
 import HomeScreen from '../screens/Home';
 import TopFiveScreen from '../screens/TopFive';
 import SearchScreen from '../screens/Search';
-import MyAccountScreen from '../screens/MyAccount';
+//Screens MyAccount
+import MyAccountScreen from '../screens/MyAccount/MyAccount';
+import RegisterScreen from '../screens/MyAccount/Register';
+import LoginScreen from '../screens/MyAccount/Login';
 
 const homeScreenStack = createStackNavigator({
 	Home: {
@@ -22,7 +26,7 @@ const topFiveScreenStack = createStackNavigator({
 	TopFive: {
 		screen: TopFiveScreen,
 		navigationOptions: ({ navigation }) => ({
-			title: 'TopFive Restaurant'
+			title: 'Top 5 Restaurant'
 		})
 	}
 });
@@ -37,18 +41,72 @@ const searchScreenStack = createStackNavigator({
 });
 
 const myAccountScreenStack = createStackNavigator({
-	Search: {
+	MyAccount: {
 		screen: MyAccountScreen,
 		navigationOptions: ({ navigation }) => ({
 			title: 'Mi Cuenta'
 		})
+	},
+	Register: {
+		screen: RegisterScreen,
+		navigationOptions: ({ navigation }) => ({
+			title: 'Registro'
+		})
+	},
+	Login: {
+		screen: LoginScreen,
+		navigationOptions: ({ navigation }) => ({
+			title: 'Login'
+		})
 	}
 });
 
-const RootStack = createBottomTabNavigator({
-	Home: {
-		screen: homeScreenStack
+const RootStack = createBottomTabNavigator(
+	{
+		Home: {
+			screen: homeScreenStack,
+			navigationOptions: ({ navigation }) => ({
+				tabBarLabel: 'Home',
+				tabBarIcon: ({ tintColor }) => (
+					<Icon name="home" type="material-community" size={40} color={tintColor} />
+				)
+			})
+		},
+		TopFive: {
+			screen: topFiveScreenStack,
+			navigationOptions: ({ navigation }) => ({
+				tabBarLabel: 'Top 5',
+				tabBarIcon: ({ tintColor }) => (
+					<Icon name="star-outline" type="material-community" size={40} color={tintColor} />
+				)
+			})
+		},
+		Search: {
+			screen: searchScreenStack,
+			navigationOptions: ({ navigation }) => ({
+				tabBarLabel: 'Buscar',
+				tabBarIcon: ({ tintColor }) => (
+					<Icon name="magnify" type="material-community" size={35} color={tintColor} />
+				)
+			})
+		},
+		MyAccount: {
+			screen: myAccountScreenStack,
+			navigationOptions: ({ navigation }) => ({
+				tabBarLabel: 'Mi Cuenta',
+				tabBarIcon: ({ tintColor }) => (
+					<Icon name="account" type="material-community" size={35} color={tintColor} />
+				)
+			})
+		}
+	},
+	{
+		initialRouteName: 'MyAccount',
+		tabBarOptions: {
+			inactiveTintColor: '#646464',
+			activeTintColor: '#00a680'
+		}
 	}
-});
+);
 
 export default createAppContainer(RootStack);
