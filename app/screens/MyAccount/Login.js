@@ -9,7 +9,8 @@ const Form = t.form.Form;
 import { LoginStruct, LoginOptions } from '../../forms/Login'; //se importa la estructura y las opciones
 //Importamos la libreria firebase
 import * as firebase from 'firebase';
-import { FacebookApi } from '../../utils/Social';
+import * as Facebook from 'expo-facebook';
+import { facebookApi } from '../../utils/Social';
 
 export default class Login extends Component {
 	//se carga la estructura del Formulario al State
@@ -55,11 +56,27 @@ export default class Login extends Component {
 	};
 
 	loginFacebook = async () => {
-		const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(FacebookApi.aplication_id, {
-			permissions: FacebookApi.permissions
-		});
-		console.log(type);
-		console.log(token);
+			const { type, token , expires, permissions,	declinedPermissions} =  await Facebook.logInWithReadPermissionsAsync(facebookApi.aplication_id, {
+				permissions: facebookApi.permissions,
+		  	});
+			if(type === 'success'){
+				const credentials = firebase.auth.FacebookAuthProvider.credential(token);
+				firebase
+				.auth()
+				.singInWithCredential(credentials)
+				.then( ()=> {
+					this.refs.toastLogin.show("Login Correcto", 100, ()=>{
+						this.props.navigation.goBack()
+					});
+				})
+				.catch(err => {
+					this.refs.toastLogin.show("Error accediendo con facebook, intentelo mas tarde", 300)
+				})
+			} else if( type=== 'cancel'){
+				this.refs.toastLogin.show("Inicio de Sesion Cancelado", 300)
+			}else{
+				this.refs.toastLogin.show("Error Desconocido", 300)
+		}
 	};
 
 	onChangeFormLogin = (formValue) => {
